@@ -91,7 +91,7 @@
 	
 	
 	// CNC
-	NSMutableArray*	SchnittDatenArray;
+	NSMutableArray*	USB_DatenArray;
 	int					Stepperposition;
 	
 	int					schliessencounter;
@@ -116,7 +116,6 @@
 - (IBAction)terminate:(id)sender;
 - (void) setLastValueRead:(NSData*) inData;
 - (int)USBOpen;
-- (void)setHalt:(int)haltstatus;
 
 
 - (IBAction)reportReadUSB:(id)sender;

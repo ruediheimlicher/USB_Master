@@ -125,13 +125,13 @@ private void button4_Click(object sender, EventArgs e)
 
 
 
-- (void)WriteSchnittdatenArrayReportAktion:(NSNotification*)note
+- (void)WriteUSB_DatenArrayReportAktion:(NSNotification*)note
 {
-	NSLog(@"WriteSchnittdatenArrayReportAktion");
- //NSLog(@"WriteSchnittdatenArrayReportAktion note: %@",[[note userInfo]objectForKey:@"schnittdatenarray"]);
-	if ([[note userInfo]objectForKey:@"schnittdatenarray"])
+	NSLog(@"WriteUSB_DatenArrayReportAktion");
+ //NSLog(@"WriteUSB_DatenArrayReportAktion note: %@",[[note userInfo]objectForKey:@"USB_DatenArray"]);
+	if ([[note userInfo]objectForKey:@"USB_DatenArray"])
 	{
-	//	[SchnittDatenArray setArray:[[note userInfo]objectForKey:@"schnittdatenarray"]];
+	//	[USB_DatenArray setArray:[[note userInfo]objectForKey:@"USB_DatenArray"]];
 		
 		Stepperposition=0;
 		[self writeCNCAbschnitt];
@@ -247,9 +247,9 @@ private void button4_Click(object sender, EventArgs e)
       }
 
    }
-    [SchnittDatenArray setArray:[NSArray array]];
-   //NSLog(@"USB_SchnittdatenAktion SchnittDatenArray vor: %@",[SchnittDatenArray description]);
-   //NSLog(@"USB_SchnittdatenAktion SchnittDatenArray Stepperposition: %d",Stepperposition);
+    [USB_DatenArray setArray:[NSArray array]];
+   //NSLog(@"USB_SchnittdatenAktion USB_DatenArray vor: %@",[USB_DatenArray description]);
+   //NSLog(@"USB_SchnittdatenAktion USB_DatenArray Stepperposition: %d",Stepperposition);
 	//NSLog(@"USB_SchnittdatenAktion note: %@",[[note userInfo]description]);
    pwm = 0;
    
@@ -260,7 +260,7 @@ private void button4_Click(object sender, EventArgs e)
    }
    
    
-   if ([[note userInfo]objectForKey:@"schnittdatenarray"])
+   if ([[note userInfo]objectForKey:@"USB_DatenArray"])
     {
 
        int home = 0;
@@ -270,10 +270,10 @@ private void button4_Click(object sender, EventArgs e)
        
        }
        
-       //NSLog(@"USB_SchnittdatenAktion Object 0 aus SchnittDatenArray aus note: %@",[[[[note userInfo]objectForKey:@"schnittdatenarray"]objectAtIndex:0] description]);
-       [SchnittDatenArray setArray:[[note userInfo]objectForKey:@"schnittdatenarray"]];
-       //NSLog(@"USB_SchnittdatenAktion SchnittDatenArray %@",[[SchnittDatenArray objectAtIndex:0] description]);
-       //NSLog(@"USB_SchnittdatenAktion SchnittDatenArray: %@",[SchnittDatenArray description]);
+       //NSLog(@"USB_SchnittdatenAktion Object 0 aus USB_DatenArray aus note: %@",[[[[note userInfo]objectForKey:@"USB_DatenArray"]objectAtIndex:0] description]);
+       [USB_DatenArray setArray:[[note userInfo]objectForKey:@"USB_DatenArray"]];
+       //NSLog(@"USB_SchnittdatenAktion USB_DatenArray %@",[[USB_DatenArray objectAtIndex:0] description]);
+       //NSLog(@"USB_SchnittdatenAktion USB_DatenArray: %@",[USB_DatenArray description]);
 
        
        if (sizeof(newsendbuffer))
@@ -282,22 +282,22 @@ private void button4_Click(object sender, EventArgs e)
            }
        newsendbuffer=malloc(32);
        
-       NSMutableArray* tempSchnittdatenArray=(NSMutableArray*)[SchnittDatenArray objectAtIndex:Stepperposition];
-       //[tempSchnittdatenArray addObject:[NSNumber numberWithInt:[AVR pwm]]];
+       NSMutableArray* tempUSB_DatenArray=(NSMutableArray*)[USB_DatenArray objectAtIndex:Stepperposition];
+       //[tempUSB_DatenArray addObject:[NSNumber numberWithInt:[AVR pwm]]];
        NSScanner *theScanner;
        unsigned	  value;
-       //NSLog(@"writeCNCAbschnitt tempSchnittdatenArray count: %d",[tempSchnittdatenArray count]);
-       //NSLog(@"tempSchnittdatenArray object 20: %d",[[tempSchnittdatenArray objectAtIndex:20]intValue]);
+       //NSLog(@"writeCNCAbschnitt tempUSB_DatenArray count: %d",[tempUSB_DatenArray count]);
+       //NSLog(@"tempUSB_DatenArray object 20: %d",[[tempUSB_DatenArray objectAtIndex:20]intValue]);
        //NSLog(@"loop start");
        int i=0;
-       for (i=0;i<[tempSchnittdatenArray count];i++)
+       for (i=0;i<[tempUSB_DatenArray count];i++)
        {
           //NSLog(@"i: %d tempString: %@",i,tempString);
-          int tempWert=[[tempSchnittdatenArray objectAtIndex:i]intValue];
+          int tempWert=[[tempUSB_DatenArray objectAtIndex:i]intValue];
           //           fprintf(stderr,"%d\t",tempWert);
           NSString*  tempHexString=[NSString stringWithFormat:@"%x",tempWert];
           
-          //theScanner = [NSScanner scannerWithString:[[tempSchnittdatenArray objectAtIndex:i]stringValue]];
+          //theScanner = [NSScanner scannerWithString:[[tempUSB_DatenArray objectAtIndex:i]stringValue]];
           theScanner = [NSScanner scannerWithString:tempHexString];
           if ([theScanner scanHexInt:&value])
           {
@@ -417,7 +417,7 @@ private void button4_Click(object sender, EventArgs e)
    double dauer7 = 0;
    double dauer8 = 0;
    
-   if (Stepperposition ==0)//< [SchnittDatenArray count])
+   if (Stepperposition ==0)//< [USB_DatenArray count])
    {
       [self stopTimer];
       return;
@@ -623,14 +623,14 @@ private void button4_Click(object sender, EventArgs e)
           19   indexl
           
           */
-         NSMutableIndexSet* AnschlagSet = [NSMutableIndexSet indexSet]; // Index fuer zu loeschende Daten im Schnittdatenarray
-         // Index fuer zu loeschende Daten im Schnittdatenarray
+         NSMutableIndexSet* AnschlagSet = [NSMutableIndexSet indexSet]; // Index fuer zu loeschende Daten im USB_DatenArray
+         // Index fuer zu loeschende Daten im USB_DatenArray
          switch (abschnittfertig)
          {
             case 0xE1: // Antwort auf Mouseup 0xE0 HALT
             {
                NSLog(@"readUSB  mouseup ");
-               [SchnittDatenArray removeAllObjects];
+               [USB_DatenArray removeAllObjects];
                
                
                if (readTimer)
@@ -767,9 +767,9 @@ private void button4_Click(object sender, EventArgs e)
          
          if ([AnschlagSet count])
          {
-            for(i=Stepperposition-1;i<[SchnittDatenArray count];i++)
+            for(i=Stepperposition-1;i<[USB_DatenArray count];i++)
             {
-               NSMutableArray* tempZeilenArray = [SchnittDatenArray objectAtIndex:i];
+               NSMutableArray* tempZeilenArray = [USB_DatenArray objectAtIndex:i];
                //NSLog(@"i: %d tempZeilenArray : %@",i,[tempZeilenArray description]);
                int k=0;
                
@@ -782,7 +782,7 @@ private void button4_Click(object sender, EventArgs e)
                   }
                }
                
-               if (i==[SchnittDatenArray count]-1)
+               if (i==[USB_DatenArray count]-1)
                {
                   // NSLog(@"tempZeilenArray nach : %@",[tempZeilenArray description]);
                }

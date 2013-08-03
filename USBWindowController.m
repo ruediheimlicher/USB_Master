@@ -130,9 +130,9 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
                                    [NSString stringWithFormat:@"%d",i+7],
                                    [NSString stringWithFormat:@"%d",i+8],
                                    [NSString stringWithFormat:@"%d",i+9],nil];
-      [SchnittDatenArray addObject:tempArray];
+      [USB_DatenArray addObject:tempArray];
    }
-   //NSLog(@"readUSBSchnittdatenArray: %@",[SchnittDatenArray description]);
+   //NSLog(@"readUSBUSB_DatenArray: %@",[USB_DatenArray description]);
    [self write_Abschnitt];
 }
 
@@ -146,7 +146,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
    [SchnittdatenDic setObject:[NSNumber numberWithInt:1] forKey:@"pwm"];
    
    /*
-    2013-08-02 09:14:29.023 USB_Stepper[1560:303] SchnittdatenArray 0: (
+    2013-08-02 09:14:29.023 USB_Stepper[1560:303] USB_DatenArray 0: (
     (
     39,
     1,
@@ -222,7 +222,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
     )
 
     */
-   NSMutableArray* SchnittdatenArray = [[NSMutableArray alloc]initWithCapacity:0];
+   NSMutableArray* USB_DatenArray = [[NSMutableArray alloc]initWithCapacity:0];
    for (int i=0;i<8;i++)
    {
       NSArray* temparray = [NSArray arrayWithObjects:[NSNumber numberWithInt:i],
@@ -234,10 +234,10 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
                             [NSNumber numberWithInt:7*i],
                             [NSNumber numberWithInt:8*i],
                             [NSNumber numberWithInt:i],nil];
-      [SchnittdatenArray addObject:temparray];
+      [USB_DatenArray addObject:temparray];
    }
    
-      [SchnittdatenDic setObject:SchnittdatenArray forKey:@"schnittdatenarray"];
+      [SchnittdatenDic setObject:USB_DatenArray forKey:@"USB_DatenArray"];
       [SchnittdatenDic setObject:[NSNumber numberWithInt:1] forKey:@"cncposition"];
       [SchnittdatenDic setObject:[NSNumber numberWithInt:0] forKey:@"home"]; //
    
@@ -256,9 +256,9 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 
 - (void)write_Abschnitt
 {
-	//NSLog(@"writeCNCAbschnitt SchnittDatenArray anz: %d\n SchnittDatenArray: %@",[SchnittDatenArray count],[SchnittDatenArray description]);
+	//NSLog(@"writeCNCAbschnitt USB_DatenArray anz: %d\n USB_DatenArray: %@",[USB_DatenArray count],[USB_DatenArray description]);
    
-   if (Stepperposition < [SchnittDatenArray count])
+   if (Stepperposition < [USB_DatenArray count])
 	{
       NSDate* dateA=[NSDate date];
       
@@ -268,17 +268,17 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
       //
       int i;
       
-      NSMutableArray* tempSchnittdatenArray=(NSMutableArray*)[SchnittDatenArray objectAtIndex:Stepperposition];
+      NSMutableArray* tempUSB_DatenArray=(NSMutableArray*)[USB_DatenArray objectAtIndex:Stepperposition];
       
       NSScanner *theScanner;
       unsigned	  value;
-      //NSLog(@"writeCNCAbschnitt tempSchnittdatenArray count: %d",[tempSchnittdatenArray count]);
+      //NSLog(@"writeCNCAbschnitt tempUSB_DatenArray count: %d",[tempUSB_DatenArray count]);
       //NSLog(@"loop start");
       //NSDate *anfang = [NSDate date];
-      for (i=0;i<[tempSchnittdatenArray count];i++)
+      for (i=0;i<[tempUSB_DatenArray count];i++)
       {
          
-         int tempWert=[[tempSchnittdatenArray objectAtIndex:i]intValue];
+         int tempWert=[[tempUSB_DatenArray objectAtIndex:i]intValue];
          //           fprintf(stderr,"%d\t",tempWert);
          NSString*  tempHexString=[NSString stringWithFormat:@"%x",tempWert];
          theScanner = [NSScanner scannerWithString:tempHexString];
@@ -293,7 +293,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
             return;
          }
          
-         //sendbuffer[i]=(char)[[tempSchnittdatenArray objectAtIndex:i]UTF8String];
+         //sendbuffer[i]=(char)[[tempUSB_DatenArray objectAtIndex:i]UTF8String];
       }
       
       sendbuffer[20] = 33;
@@ -351,7 +351,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 	NSData*		dataRead;
 	int         reportSize=32;
    
-   if (Stepperposition ==0)//< [SchnittDatenArray count])
+   if (Stepperposition ==0)//< [USB_DatenArray count])
    {
       //     [self stop_Timer];
       //     return;
@@ -532,14 +532,14 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
    }
    
    
-//   if ([[note userInfo]objectForKey:@"schnittdatenarray"])
+//   if ([[note userInfo]objectForKey:@"USB_DatenArray"])
    {
       
       
       Stepperposition=1;
       
       
-      if ([SchnittDatenArray count])
+      if ([USB_DatenArray count])
       {
       if (sizeof(newsendbuffer))
       {
@@ -547,22 +547,22 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
       }
       newsendbuffer=malloc(32);
       
-      NSMutableArray* tempSchnittdatenArray=(NSMutableArray*)[SchnittDatenArray objectAtIndex:Stepperposition];
-      //[tempSchnittdatenArray addObject:[NSNumber numberWithInt:[AVR pwm]]];
+      NSMutableArray* tempUSB_DatenArray=(NSMutableArray*)[USB_DatenArray objectAtIndex:Stepperposition];
+      //[tempUSB_DatenArray addObject:[NSNumber numberWithInt:[AVR pwm]]];
       NSScanner *theScanner;
       unsigned	  value;
-      //NSLog(@"USB_ReadAktion tempSchnittdatenArray count: %d",[tempSchnittdatenArray count]);
-      //NSLog(@"tempSchnittdatenArray object 20: %d",[[tempSchnittdatenArray objectAtIndex:20]intValue]);
+      //NSLog(@"USB_ReadAktion tempUSB_DatenArray count: %d",[tempUSB_DatenArray count]);
+      //NSLog(@"tempUSB_DatenArray object 20: %d",[[tempUSB_DatenArray objectAtIndex:20]intValue]);
       //NSLog(@"loop start");
       int i=0;
-      for (i=0;i<[tempSchnittdatenArray count];i++)
+      for (i=0;i<[tempUSB_DatenArray count];i++)
       {
          //NSLog(@"i: %d tempString: %@",i,tempString);
-         int tempWert=[[tempSchnittdatenArray objectAtIndex:i]intValue];
+         int tempWert=[[tempUSB_DatenArray objectAtIndex:i]intValue];
          //           fprintf(stderr,"%d\t",tempWert);
          NSString*  tempHexString=[NSString stringWithFormat:@"%x",tempWert];
          
-         //theScanner = [NSScanner scannerWithString:[[tempSchnittdatenArray objectAtIndex:i]stringValue]];
+         //theScanner = [NSScanner scannerWithString:[[tempUSB_DatenArray objectAtIndex:i]stringValue]];
          theScanner = [NSScanner scannerWithString:tempHexString];
          if ([theScanner scanHexInt:&value])
          {
@@ -609,10 +609,6 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
    }
 }
 
-- (void)setHalt:(int)haltstatus
-{
-   halt = haltstatus;
-}
 
 /*" Invoked when the nib file including the window has been loaded. "*/
 - (void) awakeFromNib
@@ -684,149 +680,20 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 				  name:@"CNCaktion"
 				object:nil];
 	*/
-	[nc addObserver:self
-           selector:@selector(USB_SchnittdatenAktion:)
-               name:@"usbschnittdaten"
-             object:nil];
-
-	[nc addObserver:self
-          selector:@selector(SlaveResetAktion:)
-              name:@"slavereset"
-            object:nil];
-   
-
-
-
-	[nc addObserver:self
-			 selector:@selector(TastenAktion:)
-				  name:@"Tastenaktion"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(EinzelTastenAktion:)
-				  name:@"Einzeltastenaktion"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(SendTastenAktion:)
-				  name:@"SendTastenAktion"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(SendAktion:)
-				  name:@"SendAktion"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(InputAktion:)
-				  name:@"InputAktion"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(BeendenAktion:)
-				  name:@"IOWarriorBeenden"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(FensterSchliessenAktion:)
-				  name:@"NSWindowWillCloseNotification"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(sendCmdAktion:)
-				  name:@"sendcmd"
-				object:nil];
-
-	[nc addObserver:self
-			 selector:@selector(sendReportAktion:)
-				  name:@"sendReport"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(i2cEEPROMReadReportAktion:)
-				  name:@"i2ceepromread"
-				object:nil];
-	
-	
-	[nc addObserver:self
-			 selector:@selector(i2cEEPROMWriteReportAktion:)
-				  name:@"i2ceepromwrite"
-				object:nil];
-	
-	[nc addObserver:self
-			 selector:@selector(i2cAVRWriteReportAktion:)
-				  name:@"i2cavrwrite"
-				object:nil];
-
-	
-
-	[nc addObserver:self
-			 selector:@selector(WriteSchnittdatenArrayReportAktion:)
-				  name:@"writeschnittdatenarray"
-				object:nil];
-	
-	
-	
-	[nc addObserver:self
-			 selector:@selector(i2cStatusAktion:)
-				  name:@"i2cstatus"
-				object:nil];
-	
-	
-	[nc addObserver:self
-			 selector:@selector(twiStatusAktion:)
-				  name:@"twistatus"
-				object:nil];
-
-	
-	[nc addObserver:self
-			 selector:@selector(spiStatusAktion:)
-				  name:@"spistatus"
-				object:nil];
-	
-   
-   [nc addObserver:self
-          selector:@selector(MausAktion:)
-              name:@"mausdaten"
-            object:nil];
-   
-   [nc addObserver:self
-          selector:@selector(USBAktion:)
-              name:@"usbopen"
-            object:nil];
-   
-   
-   [nc addObserver:self
-          selector:@selector(PfeilAktion:)
-              name:@"Pfeil"
-            object:nil];
-
-   
-   [nc addObserver:self
-          selector:@selector(HaltAktion:)
-              name:@"Halt"
-            object:nil];
-   
-	
-
-   
-   [nc addObserver:self
-          selector:@selector(DC_Aktion:)
-              name:@"DC_pwm"
-            object:nil];
-   
-   
-   [nc addObserver:self
-          selector:@selector(StepperstromAktion:)
-              name:@"stepperstrom"
-            object:nil];
-   
 
 	lastDataRead=[[NSData alloc]init];
-	//	[self readPList];
+	
+   // Einfuegen
+   //	[self readPList];
 	
 	//[self showAVR:NULL];
-	[self showWindow:NULL];
+		//[AVR setProfilPlan:NULL];
+	//	[self showADWandler:NULL];	
+
+   
+   // End Einfuegen
+   
+   [self showWindow:NULL];
    
    // Menu aktivieren
 	//[[FileMenu itemWithTag:1005]setTarget :AVR];
@@ -834,17 +701,12 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 	//[[ProfilMenu itemWithTag:5001]setAction:@selector(readProfil:)];
 	
 	
-	//[AVR setProfilPlan:NULL];
-	//	[self showADWandler:NULL];	
 
 	// 
-	//CNC
-	SchnittDatenArray=[[[NSMutableArray alloc]initWithCapacity:0]retain];
+	//
+	USB_DatenArray=[[[NSMutableArray alloc]initWithCapacity:0]retain];
    
-   pfeilaktion=0; // signalisiert in writeCNCAbschnitt, dass eine der Pfeiltasten im Fenster gedrŸckt und wieder losgelassen wurde,also Pfeil beenden 
-	
-   HomeAnschlagSet = [[NSMutableIndexSet indexSet]retain];
-   
+    
    schliessencounter=0;	// Zaehlt FensterschliessenAktionen
     
     ignoreDuplicates=1;
@@ -1009,6 +871,13 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 
 - (void)readPList
 {
+   
+   return;
+   
+   
+   // Anpassen
+   
+   
 	BOOL USBDatenDa=NO;
 	BOOL istOrdner;
 	NSFileManager *Filemanager = [NSFileManager defaultManager];
@@ -1049,6 +918,12 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 
 - (void)savePListAktion:(NSNotification*)note
 {
+   return;
+   
+   
+   // aktion anpassen
+   
+   
 	BOOL USBDatenDa=NO;
 	BOOL istOrdner;
 	NSFileManager *Filemanager = [NSFileManager defaultManager];
