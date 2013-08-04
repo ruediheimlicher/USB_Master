@@ -42,6 +42,8 @@ void DeviceAdded(void *refCon, io_iterator_t iterator)
 {
    NSLog(@"IOWWindowController DeviceAdded");
    NSDictionary* NotDic = [NSDictionary  dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:USBATTACHED],@"usb", nil];
+   
+   
    NSNotificationCenter *nc=[NSNotificationCenter defaultCenter];
    
    [nc postNotificationName:@"usbopen" object:NULL userInfo:NotDic];
@@ -52,7 +54,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
    NSLog(@"IOWWindowController DeviceRemoved");
    NSDictionary* NotDic = [NSDictionary  dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:USBREMOVED],@"usb", nil];
    NSNotificationCenter *nc=[NSNotificationCenter defaultCenter];
-   [nc postNotificationName:@"usbopen" object:NULL userInfo:NotDic];
+   //[nc postNotificationName:@"usbopen" object:NULL userInfo:NotDic];
 }
 
 - (int)USBOpen
@@ -681,6 +683,11 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 				object:nil];
 	*/
 
+   [nc addObserver:self
+			 selector:@selector(USBOpen)
+				  name:@"usbopen"
+				object:nil];
+
 	lastDataRead=[[NSData alloc]init];
 	
    // Einfuegen
@@ -799,6 +806,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
    //fprintf(stderr,"prod: %s\n",prod);
    NSString* Prod = [NSString stringWithUTF8String:prod];
    NSLog(@"Manu: %@ Prod: %@",Manu, Prod);
+   
    NSDictionary* USBDatenDic = [NSDictionary dictionaryWithObjectsAndKeys:Prod,@"prod",Manu,@"manu", nil];
    //[AVR setUSBDaten:USBDatenDic];
 
@@ -1000,7 +1008,7 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 
 - (BOOL)windowWillClose:(id)sender
 {
-	NSLog(@"windowWillClose");
+	NSLog(@"windowWillClose schliessencounter: %d",schliessencounter);
    /*
     NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
     NSMutableDictionary* BeendenDic=[[[NSMutableDictionary alloc]initWithCapacity:0]autorelease];
@@ -1008,14 +1016,14 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
     [nc postNotificationName:@"IOWarriorBeenden" object:self userInfo:BeendenDic];
     
     */
-	
+	[NSApp terminate:self];
 	return YES;
 }
 
 
 - (BOOL)Beenden
 {
-	//NSLog(@"Beenden");
+	NSLog(@"Beenden");
 //   if (schliessencounter ==0)
    {
       //NSLog(@"Beenden savePListAktion");
@@ -1032,12 +1040,12 @@ void DeviceRemoved(void *refCon, io_iterator_t iterator)
 	{
 		return;
 	}
-//	NSLog(@"Fenster Schliessen");
+	NSLog(@"Fenster Schliessen");
 		
    if ([[[note object]title]length] && ![[[note object]title]isEqualToString:@"Print"]) // nicht bei Printdialog
    {
       schliessencounter++;
-      //NSLog(@"hat Title");
+      NSLog(@"hat Title");
       
       // "New Folder" wird bei 10.6.8 als Titel von open zurueckgegeben. Deshalb ausschliessen(iBook schwarz)
       

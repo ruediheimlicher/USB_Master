@@ -37,7 +37,7 @@
 // int rawhid_open(int max, int vid, int pid, int usage_page, int usage)
 // extern int rawhid_recv( );
 
-@interface USBWindowController : NSWindowController
+@interface USBWindowController : NSWindowController <NSApplicationDelegate>
 {
     BOOL									isReading;
 	BOOL									isTracking;
